@@ -1,11 +1,17 @@
 #!/bin/bash
 
-# Wait for postgres
-echo "Waiting for postgres..."
-while ! nc -z $DB_HOST $DB_PORT; do
-  sleep 0.1
-done
-echo "PostgreSQL started"
+# Wait for postgres (skip for Railway)
+if [ -n "$DATABASE_URL" ]; then
+    echo "Using Railway PostgreSQL DATABASE_URL"
+elif [ -n "$DB_HOST" ] && [ -n "$DB_PORT" ]; then
+    echo "Waiting for postgres..."
+    while ! nc -z $DB_HOST $DB_PORT; do
+      sleep 0.1
+    done
+    echo "PostgreSQL started"
+else
+    echo "No database host specified, proceeding..."
+fi
 
 # Run migrations
 echo "Running database migrations..."

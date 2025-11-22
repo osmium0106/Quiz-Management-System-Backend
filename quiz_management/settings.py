@@ -72,15 +72,14 @@ TEMPLATES = [
 WSGI_APPLICATION = 'quiz_management.wsgi.application'
 
 # Database
+import dj_database_url
+
+# Use DATABASE_URL for Railway, fallback to individual settings for local development
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': config('DB_NAME', default='quiz_management_db'),
-        'USER': config('DB_USER', default='quiz_user'),
-        'PASSWORD': config('DB_PASSWORD', default='quiz_password'),
-        'HOST': config('DB_HOST', default='localhost'),
-        'PORT': config('DB_PORT', default='5432'),
-    }
+    'default': dj_database_url.config(
+        env='DATABASE_URL',
+        default=f"postgresql://{config('DB_USER', default='quiz_user')}:{config('DB_PASSWORD', default='quiz_password')}@{config('DB_HOST', default='localhost')}:{config('DB_PORT', default='5432')}/{config('DB_NAME', default='quiz_management_db')}"
+    )
 }
 
 # Custom user model
